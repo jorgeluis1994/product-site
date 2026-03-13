@@ -3,7 +3,7 @@ import { ProductTable } from "../../components/product-table/product-table";
 
 @Component({
   selector: 'app-product-list-page',
-  imports: [ProductTable],
+  imports: [],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.scss',
 })
