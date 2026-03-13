@@ -1,7 +1,9 @@
 <div class="container-form">
   <div class="header-form">
     <h4>Formulario de Registro</h4>
+
   </div>
+  <hr class="separator" />
 
   <div class="form-product">
     <form [formGroup]="facade.form" (ngSubmit)="facade.submit()">
@@ -34,15 +36,17 @@
         </div>
       </div>
 
-      <div class="form-actions">
+      <!-- <div class="form-actions">
         <button type="button" (click)="facade.resetForm()">Reiniciar</button>
 
         <button type="submit" [disabled]="facade.form.invalid || facade.isSaving()">
           {{ facade.isSaving() ? 'Enviando...' : 'Enviar' }}
         </button>
-      </div>
+      </div> -->
     </form>
   </div>
+
+
   <div class="debug-container">
   <h3>Estado del Formulario (JSON)</h3>
   <pre>{{ facade.form.value | json }}</pre>
