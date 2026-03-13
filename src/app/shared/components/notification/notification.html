@@ -1,0 +1,5 @@
+@if (notificationService.alert$ | async; as alert) {
+  <div class="notification-container" [class]="alert.type">
+    <span class="message">{{ alert.message }}</span>
+  </div>
+}

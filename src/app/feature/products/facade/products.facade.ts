@@ -23,18 +23,29 @@ export class ProductsFacade {
   readonly isLoading = this._loading.asReadonly();
 
   // ACCIONES
-  loadProducts() {
-    this._loading.set(true);
-    this.productService
-      .getProducts()
-      .pipe(finalize(() => this._loading.set(false)))
-      .subscribe({
-        next: (response) => {
-          this._products.set(response.data);
-        },
-        error: (err) => console.error(err),
-      });
-  }
+loadProducts() {
+  console.log('--- [FACHADA] 1. Iniciando carga de productos');
+  this._loading.set(true);
+
+  this.productService.getProducts()
+    .pipe(
+      finalize(() => {
+        console.log('--- [FACHADA] 3. Finalize: Carga terminada (Loading = false)');
+        this._loading.set(false);
+      })
+    )
+    .subscribe({
+      next: (response) => {
+        console.log('--- [FACHADA] 2. Éxito: Datos recibidos del Back:', response);
+        this._products.set(response.data);
+      },
+      error: (err) => {
+        console.error('--- [FACHADA] ERROR: No se pudo conectar al Back:', err);
+      }
+    });
+}
+
+
 
   // 2. Buscar (Actualiza el término para el computed)
   setSearchTerm(term: string) {
