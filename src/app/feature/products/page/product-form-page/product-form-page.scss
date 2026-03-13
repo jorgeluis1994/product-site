@@ -1,0 +1,18 @@
+.container-form {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.header-form {
+  display: flex;
+  justify-content: center;
+}
+.form-product {
+  display: flex;
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+}

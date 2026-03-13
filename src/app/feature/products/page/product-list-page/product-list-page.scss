@@ -1,58 +1,22 @@
+// Padre
 .page {
-  background: #f5f6f8;
-  padding: 40px;
-  min-height: 100vh;
-}
-
-.search-bar {
-  margin-bottom: 20px;
-}
-
-.search-bar input {
-  width: 250px;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-.table-container {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.product-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.product-table thead {
-  background: #f7f7f7;
-}
-
-.product-table th {
-  text-align: left;
-  padding: 12px;
-  font-weight: 600;
-  font-size: 14px;
-}
-.product-table td {
-  padding: 12px;
-  border-top: 1px solid #eee;
-}
-.avatar {
-  width: 36px;
-  height: 36px;
-  background: #dfe3ea;
-  border-radius: 50%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
+  background: #cccc;
+  flex-direction: column;
+  height: 100vh;
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.table-container {
+  background-color: rgb(255, 255, 255);
+  flex-shrink: 0;
+}
 .table-footer {
-  margin-top: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  flex-shrink: 0;
 }

@@ -1,11 +1,20 @@
 <div class="page">
-  <div class="search-bar">
-    <!-- Conectamos el input a la fachada -->
-    <input
-      type="text"
-      placeholder="Search.."
-      (input)="facade.setSearchTerm($any($event.target).value)"
-    />
+  <div class="header">
+    <div class="search-bar">
+      <!-- Conectamos el input a la fachada -->
+      <input
+        type="text"
+        placeholder="Search.."
+        (input)="facade.setSearchTerm($any($event.target).value)"
+      />
+    </div>
+    <button class="button-middle">Botón Central</button>
+
+   <div class="button-add">
+  <!-- Cambia "products/add" por "/products/add" -->
+  <button type="button" routerLink="/products/add">Agregar</button>
+</div>
+
   </div>
 
   <div class="table-container">
@@ -58,16 +67,16 @@
         </tbody>
       </table>
     }
+  </div>
 
-    <div class="table-footer">
-      <!-- Contador dinámico -->
-      <span>{{ facade.filteredProducts().length }} Resultados</span>
+  <div class="table-footer">
+    <!-- Contador dinámico -->
+    <span>{{ facade.filteredProducts().length }} Resultados</span>
 
-      <select>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-      </select>
-    </div>
+    <select>
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+    </select>
   </div>
 </div>

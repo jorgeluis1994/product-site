@@ -1,1 +1,56 @@
-<p>product-form-page works!</p>
+<div class="container-form">
+  <div class="header-form">
+    <h4>Formulario de Registro</h4>
+  </div>
+
+  <div class="form-product">
+    <form [formGroup]="facade.form" (ngSubmit)="facade.submit()">
+      <div class="form-grid">
+        <!-- ID -->
+        <div class="field">
+          <label>ID</label>
+          <input formControlName="id" placeholder="pkm-01" />
+          @if (facade.form.controls.id.touched && facade.form.controls.id.invalid) {
+            <small class="error">ID inválido (min 3 caracteres)</small>
+          }
+        </div>
+
+        <!-- Nombre -->
+        <div class="field">
+          <label>Nombre</label>
+          <input formControlName="name" />
+        </div>
+
+        <!-- Logo -->
+        <div class="field">
+          <label>Logo (URL)</label>
+          <input formControlName="logo" />
+        </div>
+
+        <!-- Fecha Liberación -->
+        <div class="field">
+          <label>Fecha Liberación</label>
+          <input type="date" formControlName="fechaLiberacion" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="facade.resetForm()">Reiniciar</button>
+
+        <button type="submit" [disabled]="facade.form.invalid || facade.isSaving()">
+          {{ facade.isSaving() ? 'Enviando...' : 'Enviar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="debug-container">
+  <h3>Estado del Formulario (JSON)</h3>
+  <pre>{{ facade.form.value | json }}</pre>
+</div>
+
+
+  <div class="actions">
+    <button class="button-middle">Reiniciar</button>
+    <button class="button-middle">Enviar</button>
+  </div>
+</div>
