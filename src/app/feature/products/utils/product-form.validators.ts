@@ -5,6 +5,8 @@ export class ProductValidators {
   // Validar que la fecha sea mayor o igual a hoy
   static atLeastToday(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+
+      debugger
       if (!control.value) return null;
       
       const selectedDate = new Date(control.value);

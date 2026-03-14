@@ -12,7 +12,6 @@ import { ProductForm } from "../../components/product-form/product-form";
   selector: 'app-product-list-page',
   imports: [
     CommonModule,
-    RouterLink,
     DialogForm,
     ProductFormPage
 ],
@@ -27,6 +26,8 @@ export class ProductListPage {
 
   ngOnInit(): void {
     this.facade.loadProducts();
+
+    
   }
    onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;

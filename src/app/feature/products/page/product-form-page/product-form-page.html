@@ -12,8 +12,8 @@
         <label>ID</label>
         <input 
           formControlName="id" 
-          [class.input-error]="facade.form.get('id')?.invalid && facade.form.get('id')?.touched" />
-        @if (facade.form.get('id')?.touched && facade.form.get('id')?.invalid) {
+          [class.input-error]="facade.form.controls.id.invalid && facade.form.controls.id.touched" />
+        @if (facade.form.controls.id.touched && facade.form.controls.id.invalid) {
           <span class="error-text">ID no válido!</span>
         }
       </div>
@@ -21,17 +21,22 @@
       <!-- Nombre -->
       <div class="field">
         <label>Nombre</label>
-        <input formControlName="name" placeholder="Tarjeta Crédito" />
+        <input 
+          formControlName="nombre" 
+          [class.input-error]="facade.form.controls.nombre.invalid && facade.form.controls.nombre.touched" />
+        @if (facade.form.controls.nombre.touched && facade.form.controls.nombre.invalid) {
+          <span class="error-text">Nombre requerido (mín. 5 chars)!</span>
+        }
       </div>
 
       <!-- Descripción -->
       <div class="field">
         <label>Descripción</label>
         <input 
-          formControlName="description" 
-          [class.input-error]="facade.form.get('description')?.invalid && facade.form.get('description')?.touched" />
-        @if (facade.form.get('description')?.touched && facade.form.get('description')?.invalid) {
-          <span class="error-text">Este campo es requerido!</span>
+          formControlName="descripcion" 
+          [class.input-error]="facade.form.controls.descripcion.invalid && facade.form.controls.descripcion.touched" />
+        @if (facade.form.controls.descripcion.touched && facade.form.controls.descripcion.invalid) {
+          <span class="error-text">Descripción requerida (mín. 10 chars)!</span>
         }
       </div>
 
@@ -40,8 +45,8 @@
         <label>Logo</label>
         <input 
           formControlName="logo" 
-          [class.input-error]="facade.form.get('logo')?.invalid && facade.form.get('logo')?.touched" />
-        @if (facade.form.get('logo')?.touched && facade.form.get('logo')?.invalid) {
+          [class.input-error]="facade.form.controls.logo.invalid && facade.form.controls.logo.touched" />
+        @if (facade.form.controls.logo.touched && facade.form.controls.logo.invalid) {
           <span class="error-text">Este campo es requerido!</span>
         }
       </div>
@@ -49,19 +54,25 @@
       <!-- Fecha Liberación -->
       <div class="field">
         <label>Fecha Liberación</label>
-        <input type="date" formControlName="date_release" />
+        <input 
+          type="date" 
+          formControlName="fecha_liberacion" 
+          [class.input-error]="facade.form.controls.fecha_liberacion.invalid && facade.form.controls.fecha_liberacion.touched" />
+        @if (facade.form.controls.fecha_liberacion.touched && facade.form.controls.fecha_liberacion.invalid) {
+          <span class="error-text">La fecha debe ser hoy o posterior!</span>
+        }
       </div>
 
       <!-- Fecha Revisión -->
       <div class="field disabled-field">
         <label>Fecha Revisión</label>
-        <input type="date" formControlName="date_revision" readonly />
+        <input type="date" formControlName="fecha_revision" readonly />
       </div>
 
     </div>
 
     <div class="form-actions">
-      <button type="button" class="btn-reset" (click)="facade.form.reset()">Reiniciar</button>
+      <button type="button" class="btn-reset" (click)="facade.resetForm()">Reiniciar</button>
       <button type="submit" class="btn-submit" [disabled]="facade.form.invalid">Enviar</button>
     </div>
   </form>
