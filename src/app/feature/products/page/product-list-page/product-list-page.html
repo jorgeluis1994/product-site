@@ -1,71 +1,61 @@
 <div class="page">
   <div class="header">
     <div class="search-bar">
-      <!-- Conectamos el input a la fachada -->
-      <input
-        type="text"
-        placeholder="Search.."
-        (input)="facade.setSearchTerm($any($event.target).value)"
-      />
+    
+      <input type="text" placeholder="Search.." (input)="facade.setSearchTerm($any($event.target).value)" />
     </div>
-    <button class="button-middle">Botón Central</button>
 
-   <div class="button-add">
-  <!-- Cambia "products/add" por "/products/add" -->
-  <button type="button" routerLink="/products/add">Agregar</button>
-</div>
+
+    <div class="button-add">
+      <button (click)="openForm()">Agregar</button>
+    </div>
 
   </div>
 
   <div class="table-container">
     @if (facade.isLoading()) {
-      <p style="text-align: center; padding: 20px">Cargando productos...</p>
+    <p style="text-align: center; padding: 20px">Cargando productos...</p>
     } @else {
-      <table class="product-table">
-        <thead>
-          <tr>
-            <th>Logo</th>
-            <th>Nombre del producto</th>
-            <th>Descripción</th>
-            <th>Fecha de liberación</th>
-            <th>Fecha de reestructuración</th>
-            <th></th>
-            <!-- Columna para acciones si necesitas -->
-          </tr>
-        </thead>
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Logo</th>
+          <th>Nombre del producto</th>
+          <th>Descripción</th>
+          <th>Fecha de liberación</th>
+          <th>Fecha de reestructuración</th>
+          <th></th>
+          <!-- Columna para acciones si necesitas -->
+        </tr>
+      </thead>
 
-        <tbody>
-          <!-- Usamos el signal filteredProducts() de la fachada -->
-          @for (product of facade.filteredProducts(); track product.id) {
-            <tr>
-              <td>
-                @if (product.logo) {
-                  <img
-                    [src]="product.logo"
-                    [alt]="product.name"
-                    class="avatar"
-                    (error)="product.logo = ''"
-                  />
-                } @else {
-                  <div class="avatar-placeholder">{{ product.name[0] }}</div>
-                }
-              </td>
+      <tbody>
+        <!-- Usamos el signal filteredProducts() de la fachada -->
+        @for (product of facade.filteredProducts(); track product.id) {
+        <tr>
+          <td>
+            @if (product.logo) {
+            <img [src]="product.logo" [alt]="product.name" class="avatar" (error)="product.logo = ''" />
+            } @else {
+            <div class="avatar-placeholder">{{ product.name[0] }}</div>
+            }
+          </td>
 
-              <td>{{ product.name }}</td>
-              <td>{{ product.description }}</td>
-              <td>{{ product.date_release | date: 'dd/MM/yyyy' }}</td>
-              <td>{{ product.date_revision | date: 'dd/MM/yyyy' }}</td>
-              <td>
-                <!-- Aquí podrías poner un botón de eliminar o editar -->
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="5" style="text-align: center">No se encontraron productos.</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.date_release | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ product.date_revision | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <!-- Aquí podrías poner un botón de eliminar o editar -->
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="5" style="text-align: center">No se encontraron productos.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
     }
   </div>
 
@@ -80,3 +70,8 @@
     </select>
   </div>
 </div>
+
+<app-dialog-form>
+  <app-product-form-page></app-product-form-page>
+
+</app-dialog-form>

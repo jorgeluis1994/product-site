@@ -1,0 +1,11 @@
+@if(dialogService.isOpen()) {
+  <div class="dialog-backdrop" (click)="closeModal()"></div>
+  
+  <div class="dialog-content">
+    <button type="button" class="close-button" (click)="closeModal()">
+      &times; 
+    </button>
+
+    <ng-content></ng-content>
+  </div>
+}

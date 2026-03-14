@@ -1,60 +1,68 @@
 <div class="container-form">
   <div class="header-form">
-    <h4>Formulario de Registro</h4>
-
+    <h2>Formulario de Registro</h2>
   </div>
   <hr class="separator" />
 
-  <div class="form-product">
-    <form [formGroup]="facade.form" (ngSubmit)="facade.submit()">
-      <div class="form-grid">
-        <!-- ID -->
-        <div class="field">
-          <label>ID</label>
-          <input formControlName="id" placeholder="pkm-01" />
-          @if (facade.form.controls.id.touched && facade.form.controls.id.invalid) {
-            <small class="error">ID inválido (min 3 caracteres)</small>
-          }
-        </div>
-
-        <!-- Nombre -->
-        <div class="field">
-          <label>Nombre</label>
-          <input formControlName="name" />
-        </div>
-
-        <!-- Logo -->
-        <div class="field">
-          <label>Logo (URL)</label>
-          <input formControlName="logo" />
-        </div>
-
-        <!-- Fecha Liberación -->
-        <div class="field">
-          <label>Fecha Liberación</label>
-          <input type="date" formControlName="fechaLiberacion" />
-        </div>
+  <form [formGroup]="facade.form" (ngSubmit)="facade.submit()" class="form-content">
+    <div class="form-grid">
+      
+      <!-- ID -->
+      <div class="field">
+        <label>ID</label>
+        <input 
+          formControlName="id" 
+          [class.input-error]="facade.form.get('id')?.invalid && facade.form.get('id')?.touched" />
+        @if (facade.form.get('id')?.touched && facade.form.get('id')?.invalid) {
+          <span class="error-text">ID no válido!</span>
+        }
       </div>
 
-      <!-- <div class="form-actions">
-        <button type="button" (click)="facade.resetForm()">Reiniciar</button>
+      <!-- Nombre -->
+      <div class="field">
+        <label>Nombre</label>
+        <input formControlName="name" placeholder="Tarjeta Crédito" />
+      </div>
 
-        <button type="submit" [disabled]="facade.form.invalid || facade.isSaving()">
-          {{ facade.isSaving() ? 'Enviando...' : 'Enviar' }}
-        </button>
-      </div> -->
-    </form>
-  </div>
+      <!-- Descripción -->
+      <div class="field">
+        <label>Descripción</label>
+        <input 
+          formControlName="description" 
+          [class.input-error]="facade.form.get('description')?.invalid && facade.form.get('description')?.touched" />
+        @if (facade.form.get('description')?.touched && facade.form.get('description')?.invalid) {
+          <span class="error-text">Este campo es requerido!</span>
+        }
+      </div>
 
+      <!-- Logo -->
+      <div class="field">
+        <label>Logo</label>
+        <input 
+          formControlName="logo" 
+          [class.input-error]="facade.form.get('logo')?.invalid && facade.form.get('logo')?.touched" />
+        @if (facade.form.get('logo')?.touched && facade.form.get('logo')?.invalid) {
+          <span class="error-text">Este campo es requerido!</span>
+        }
+      </div>
 
-  <div class="debug-container">
-  <h3>Estado del Formulario (JSON)</h3>
-  <pre>{{ facade.form.value | json }}</pre>
-</div>
+      <!-- Fecha Liberación -->
+      <div class="field">
+        <label>Fecha Liberación</label>
+        <input type="date" formControlName="date_release" />
+      </div>
 
+      <!-- Fecha Revisión -->
+      <div class="field disabled-field">
+        <label>Fecha Revisión</label>
+        <input type="date" formControlName="date_revision" readonly />
+      </div>
 
-  <div class="actions">
-    <button class="button-middle">Reiniciar</button>
-    <button class="button-middle">Enviar</button>
-  </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-reset" (click)="facade.form.reset()">Reiniciar</button>
+      <button type="submit" class="btn-submit" [disabled]="facade.form.invalid">Enviar</button>
+    </div>
+  </form>
 </div>

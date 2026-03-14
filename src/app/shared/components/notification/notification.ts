@@ -6,15 +6,15 @@ import { NotificationService } from '../../../core/services/notification.service
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [CommonModule], // Necesario para el pipe 'async' y '@if'
+  imports: [CommonModule], 
   templateUrl: './notification.html',
   styleUrl: './notification.scss',
 })
 export class Notification {
-  // Inyección de dependencia (Clean Code: inyectamos el servicio que maneja el estado)
+
   public notificationService = inject(NotificationService);
 
-  // Método opcional para cerrar manualmente si añades un botón 'x'
+ 
   close() {
     // Podrías añadir un método en el servicio para limpiar el estado
     // this.notificationService.clear();

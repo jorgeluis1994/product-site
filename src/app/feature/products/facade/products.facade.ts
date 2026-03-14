@@ -2,6 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { finalize, firstValueFrom } from 'rxjs';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Injectable()
 export class ProductsFacade {
@@ -24,20 +25,17 @@ export class ProductsFacade {
 
   // ACCIONES
   loadProducts() {
-    console.log('--- [FACHADA] 1. Iniciando carga de productos');
     this._loading.set(true);
 
     this.productService
       .getProducts()
       .pipe(
         finalize(() => {
-          console.log('--- [FACHADA] 3. Finalize: Carga terminada (Loading = false)');
           this._loading.set(false);
         }),
       )
       .subscribe({
         next: (response) => {
-          console.log('--- [FACHADA] 2. Éxito: Datos recibidos del Back:', response);
           this._products.set(response.data);
         },
         error: (err) => {
@@ -46,19 +44,19 @@ export class ProductsFacade {
       });
   }
 
-  // 2. Buscar (Actualiza el término para el computed)
+  // Buscar (Actualiza el término para el computed)
   setSearchTerm(term: string) {
     this._searchTerm.set(term);
   }
 
-  // 3. Crear Producto
+  // Crear Producto
   addProduct(product: Product) {
     this.productService.createProduct(product).subscribe(() => {
       this._products.update((prev) => [...prev, product]);
     });
   }
 
-  // 4. Actualizar Producto
+  // Actualizar Producto
   updateProduct(id: string, product: Omit<Product, 'id'>) {
     this.productService.updateProduct(id, product).subscribe((updated) => {
       this._products.update((prev) =>
@@ -67,15 +65,27 @@ export class ProductsFacade {
     });
   }
 
-  // 5. Eliminar Producto
+  // Eliminar Producto
   deleteProduct(id: string) {
     this.productService.deleteProduct(id).subscribe(() => {
       this._products.update((prev) => prev.filter((p) => p.id !== id));
     });
   }
 
-  // 6. Validar ID (Útil para Validadores Asíncronos en el formulario)
-  async checkIdExists(id: string): Promise<boolean> {
-    return await firstValueFrom(this.productService.verifyId(id));
+  // Validar ID (Async Validator)
+  checkIdExists() {
+    return async (control: AbstractControl): Promise<ValidationErrors | null> => {
+      if (!control.value) return null;
+
+      try {
+
+        const exists = await firstValueFrom(this.productService.verifyId(control.value));
+        return exists ? { idExists: true } : null;
+      } catch (error) {
+
+        return null;
+      }
+    };
   }
+
 }

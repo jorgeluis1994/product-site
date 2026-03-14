@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Notification } from "./shared/components/notification/notification";
+import { DialogForm } from "./shared/dialog/dialog-form/dialog-form";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Notification],
+  imports: [RouterOutlet, Notification, DialogForm],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

@@ -14,7 +14,6 @@ export class NotificationService {
 
   show(message: string, type: 'success' | 'error' = 'success') {
     this.alertSubject.next({ message, type });
-    // Auto-cerrar después de 3 segundos
     setTimeout(() => this.alertSubject.next(null), 3000);
   }
 }

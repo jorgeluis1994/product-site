@@ -1,50 +1,96 @@
 .container-form {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  padding: 20px;
+  background-color: #fff;
+  font-family: sans-serif;
+
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .separator {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin-bottom: 30px;
+  }
 }
-.header-form {
-  display: flex;
-  justify-content: center;
-}
-.form-product {
-  justify-content: center;
-  display: flex;
-  flex: 1;
-}
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-
+  grid-template-columns: 1fr 1fr; /* Dos columnas */
   column-gap: 40px;
-  row-gap: 20px;
-
-  width: 100%;
+  row-gap: 25px;
 }
-.separator {
-  border: 0;
-  border-top: 1px solid #000000;
-  margin: 20px 0;
-  width: 100%;
-}
-
-
 
 .field {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Label ARRIBA del input */
 
   label {
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    color: #333;
   }
 
   input {
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 1px solid #888;
     border-radius: 4px;
-    width: 100%; // El input llena su celda del grid
+    font-size: 16px;
+    outline: none;
+
+    &.input-error {
+      border-color: #d9534f; /* Borde rojo */
+    }
+  }
+
+  .error-text {
+    color: #d9534f;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: 500;
   }
 }
 
+/* Estilo para el campo deshabilitado (gris) */
+.disabled-field {
+  label { color: #ccc; }
+  input {
+    background-color: #f4f4f4;
+    border-color: #eee;
+    color: #ccc;
+  }
+}
 
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 60px;
+
+  button {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .btn-reset {
+    background-color: #e2e4e9;
+    color: #4a5161;
+  }
+
+  .btn-submit {
+    background-color: #f9ed8d; /* Amarillo pálido de la imagen */
+    color: #8c8c8c;
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
