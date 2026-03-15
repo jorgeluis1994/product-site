@@ -4,8 +4,9 @@ import { ProductsFacade } from './products.facade';
 import { ProductValidators } from '../utils/product-form.validators';
 import { Product } from '../models/product-form.model';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ProductFormFacade {
+  
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly productsFacade = inject(ProductsFacade);
 
@@ -14,7 +15,9 @@ export class ProductFormFacade {
 
   readonly form = this.fb.group({
     id: ['', {
-      validators: [Validators.required, Validators.minLength(3), Validators.maxLength(10)],
+      validators: [Validators.required, 
+      Validators.minLength(3), 
+      Validators.maxLength(10)],
       asyncValidators: [this.productsFacade.checkIdExists()],
       updateOn: 'blur'
     }],
@@ -40,29 +43,25 @@ export class ProductFormFacade {
     });
   }
 
-setEditMode(product: any) {
-  this._isEditMode.set(true);
+  setEditMode(product: any) {
+    this._isEditMode.set(true);
 
-  // 1. Función para limpiar la fecha y dejarla solo como YYYY-MM-DD
-  // Si product.date_release es "2025-01-01T00:00:00", esto devuelve "2025-01-01"
-  const cleanDate = (dateStr: any) => {
-    if (!dateStr) return '';
-    return dateStr.split('T')[0]; 
-  };
+    const cleanDate = (dateStr: any) => {
+      if (!dateStr) return '';
+      return dateStr.split('T')[0];
+    };
 
-  // 2. Mapeo manual para asegurar que los nombres coincidan exactamente
-  this.form.patchValue({
-    id: product.id,
-    nombre: product.name,            // product.name -> nombre
-    descripcion: product.description, // product.description -> descripcion
-    logo: product.logo,
-    fecha_liberacion: cleanDate(product.date_release),
-    fecha_revision: cleanDate(product.date_revision)
-  });
+    this.form.patchValue({
+      id: product.id,
+      nombre: product.name,
+      descripcion: product.description,
+      logo: product.logo,
+      fecha_liberacion: cleanDate(product.date_release),
+      fecha_revision: cleanDate(product.date_revision)
+    });
 
-  // 3. Bloqueamos el ID para edición
-  this.form.controls.id.disable();
-}
+    this.form.controls.id.disable();
+  }
 
 
 
@@ -72,7 +71,6 @@ setEditMode(product: any) {
       return;
     }
 
-    // getRawValue() captura el ID aunque esté disabled
     const values = this.form.getRawValue();
     const payload: Product = {
       id: values.id,
@@ -91,7 +89,6 @@ setEditMode(product: any) {
 
     this.resetForm();
   }
-
 
 
   resetForm() {

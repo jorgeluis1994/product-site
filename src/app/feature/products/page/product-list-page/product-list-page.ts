@@ -1,58 +1,75 @@
 import { Component, inject } from '@angular/core';
-import { ProductTable } from "../../components/product-table/product-table";
 import { ProductsFacade } from '../../facade/products.facade';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { DialogFormService } from '../../../../shared/services/dialog.service';
 import { DialogForm } from "../../../../shared/dialog/dialog-form/dialog-form";
 import { ProductFormPage } from '../product-form-page/product-form-page';
-import { ProductForm } from "../../components/product-form/product-form";
 import { ProductFormFacade } from '../../facade/product-form.facade';
+import { Product } from '../../../../core/models/product.model';
+import { DialogConfirmService } from '../../../../shared/services/dialog-confirm.service';
+import { DialogConfirm } from "../../../../shared/dialog/dialog-confirm/dialog-confirm";
 
 @Component({
   selector: 'app-product-list-page',
   imports: [
     CommonModule,
     DialogForm,
-    ProductFormPage
-  ],
-  // providers: [ProductsFacade],
+    ProductFormPage,
+    DialogConfirm
+],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.scss',
 })
 export class ProductListPage {
-
-
   public readonly facade = inject(ProductsFacade);
   public readonly dialogForm = inject(DialogFormService);
   private productFormFacade = inject(ProductFormFacade);
+  public readonly confirmService = inject(DialogConfirmService);
 
   public activeMenuId: string | null = null;
+  // Añadimos esta variable para saber qué borrar
+  public productToDelete: Product | null = null; 
 
   ngOnInit(): void {
     this.facade.loadProducts();
-
-
   }
+
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.facade.setSearchTerm(input.value);
   }
 
   openForm() {
+    this.productFormFacade.resetForm(); // Limpiamos por si acaso
     this.dialogForm.open();
   }
 
-  editForm(product: any, event: MouseEvent) {
-    // Evita que el evento se propague si tienes otros clics en la fila
+  editForm(product: Product, event: MouseEvent) {
     event.stopPropagation();
-    debugger
-
-    // Paso CLAVE: Carga los datos del producto en el formulario y activa el modo edición
     this.productFormFacade.setEditMode(product);
-
-    // Ahora sí, abre el diálogo
     this.dialogForm.open();
+    this.activeMenuId = null; // Cerramos el menú de 3 puntos
   }
 
+  toggleMenu(id: string, event: MouseEvent): void {
+    event.stopPropagation(); 
+    this.activeMenuId = (this.activeMenuId === id) ? null : id;
+  }
+
+  // REEMPLAZA TU MÉTODO ANTERIOR POR ESTE:
+  openDeleteConfirm(product: Product) {
+    this.productToDelete = product;
+    this.confirmService.open();
+    this.activeMenuId = null; // Cerramos el menú de 3 puntos al abrir el modal
+  }
+
+  // ESTE MÉTODO ES EL QUE SE LLAMA AL DAR CLICK EN "CONFIRMAR"
+  handleDelete() {
+    if (this.productToDelete) {
+      this.facade.deleteProduct(this.productToDelete.id);
+      this.confirmService.close();
+      this.productToDelete = null;
+    }
+  }
 }
+

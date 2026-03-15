@@ -1,1 +1,23 @@
-<p>dialog-confirm works!</p>
+<div class="modal-overlay">
+  <div class="modal-container">
+    
+
+    <div class="modal-content">
+      <p>
+        ¿Estas seguro de eliminar el producto 
+        <strong>{{ productName }}</strong>?
+      </p>
+    </div>
+
+
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()">
+        Cancelar
+      </button>
+      <button type="button" class="btn-confirm" (click)="onConfirm()">
+        Confirmar
+      </button>
+    </div>
+
+  </div>
+</div>

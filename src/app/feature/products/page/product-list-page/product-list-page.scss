@@ -98,7 +98,13 @@
 }
 
 .actions-cell {
-  position: relative;
-  width: 50px;
+  position: relative; 
   text-align: center;
+}
+
+.dropdown-container {
+  display: inline-block;
+  position: relative;
+
+ 
 }

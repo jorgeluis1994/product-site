@@ -11,10 +11,9 @@ export class ProductService {
   private readonly apiUrl = `${environment.baseUrl}/products`;
 
   /** GET /bp/products */
-getProducts(): Observable<{ data: Product[] }> {
-  console.log('--- [SERVICIO] 1. Llamando a API:', this.apiUrl);
-  return this.http.get<{ data: Product[] }>(this.apiUrl);
-}
+  getProducts(): Observable<{ data: Product[] }> {
+    return this.http.get<{ data: Product[] }>(this.apiUrl);
+  }
 
 
   /** GET /bp/products/verification/:id */

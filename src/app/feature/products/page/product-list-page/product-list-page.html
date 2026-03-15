@@ -46,11 +46,28 @@
           <td>{{ product.description }}</td>
           <td>{{ product.date_release | date: 'dd/MM/yyyy' }}</td>
           <td>{{ product.date_revision | date: 'dd/MM/yyyy' }}</td>
+
           <td class="actions-cell">
-            <!-- Botón de los tres puntos -->
-            <!-- <button class="btn-dots">⋮</button> -->
-            <button class="btn-dots" (click)="editForm(product, $event)">⋮</button>
+            <div class="dropdown-container">
+              <!-- El botón de los tres puntos -->
+              <button type="button" class="btn-dots" (click)="toggleMenu(product.id, $event)">
+                &#8942;
+              </button>
+
+              <!-- El menú que aparece al dar click -->
+              @if (activeMenuId === product.id) {
+              <div class="dropdown-menu">
+                <button type="button" (click)="editForm(product, $event)">Editar</button>
+                <button type="button" class="delete-opt" (click)="openDeleteConfirm(product)">Eliminar</button>
+              </div>
+              }
+            </div>
           </td>
+
+
+
+
+
         </tr>
         } @empty {
         <tr>
@@ -78,3 +95,11 @@
   <app-product-form-page></app-product-form-page>
 
 </app-dialog-form>
+
+@if (confirmService.isOpen()) {
+  <app-dialog-confirm 
+    [productName]="productToDelete?.name || ''"
+    (confirm)="handleDelete()"
+    (cancel)="confirmService.close()">
+  </app-dialog-confirm>
+}

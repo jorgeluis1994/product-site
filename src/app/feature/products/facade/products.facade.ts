@@ -6,38 +6,32 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Product } from '../../../core/models/product.model';
 
 @Injectable({
-  providedIn: 'root' // Asegura que sea un Singleton
+  providedIn: 'root' 
 })
 export class ProductsFacade {
-  
+
   private readonly productService = inject(ProductService);
   private readonly notificationService = inject(NotificationService);
-
-  // --- ESTADO (Signals) ---
   private readonly _products = signal<Product[]>([]);
   private readonly _loading = signal<boolean>(false);
   private readonly _searchTerm = signal<string>('');
 
+  readonly isLoading = this._loading.asReadonly();
+  readonly totalProducts = computed(() => this.filteredProducts().length);
+
   readonly filteredProducts = computed(() => {
     const term = this._searchTerm().toLowerCase().trim();
     const products = this._products();
-    
+
     if (!term) return products;
 
-    return products.filter(p => 
-      p.name.toLowerCase().includes(term) || 
+    return products.filter(p =>
+      p.name.toLowerCase().includes(term) ||
       p.description.toLowerCase().includes(term)
     );
   });
 
-  readonly isLoading = this._loading.asReadonly();
-  readonly totalProducts = computed(() => this.filteredProducts().length);
 
-  // --- ACCIONES ---
-
-  /**
-   * Carga inicial de productos desde la API
-   */
   loadProducts(): void {
     this._loading.set(true);
 
@@ -55,45 +49,43 @@ export class ProductsFacade {
       });
   }
 
-  /**
-   * Actualiza el término de búsqueda (F2)
-   */
   setSearchTerm(term: string): void {
     this._searchTerm.set(term);
   }
 
-  /**
-   * Crear un nuevo producto (F4)
-   */
   addProduct(product: Product): void {
     this._loading.set(true);
     this.productService.createProduct(product)
       .pipe(finalize(() => this._loading.set(false)))
       .subscribe({
-        next: () => {
-          // Actualización inmutable del estado
-          this._products.update(prev => [...prev, product]);
+        next: (response) => {
+  
+          const newProduct = response.data || product; 
+          
+          this._products.update(prev => [...prev, newProduct]);
+          
           this.notificationService.show('Producto agregado exitosamente', 'success');
         }
       });
   }
 
   /**
-   * Actualizar un producto existente (F5)
+   * Actualizar un producto existente
    */
-  updateProduct(id: string, product: Omit<Product, 'id'>): void {
+  updateProduct(id: string, product: Product): void {
     this._loading.set(true);
     this.productService.updateProduct(id, product)
       .pipe(finalize(() => this._loading.set(false)))
       .subscribe({
         next: (response) => {
-          this._products.update(prev => 
+          this._products.update(prev =>
             prev.map(p => p.id === id ? { ...p, ...response.data } : p)
           );
           this.notificationService.show('Producto actualizado correctamente', 'success');
         }
       });
   }
+
 
   /**
    * Eliminar un producto
@@ -107,12 +99,6 @@ export class ProductsFacade {
     });
   }
 
-
-
-  /**
-   * Validador para verificar si el ID ya existe 
-   * Se usa Arrow Function para no perder el contexto de 'this'
-   */
   checkIdExists = (): AsyncValidatorFn => {
     return async (control: AbstractControl): Promise<ValidationErrors | null> => {
       const value = control.value;
@@ -120,9 +106,9 @@ export class ProductsFacade {
       if (!value || value.length < 3) return null;
 
       try {
-       
+
         const isRegistered = await firstValueFrom(this.productService.verifyId(value));
-        
+
         return isRegistered ? { idExists: true } : null;
       } catch (error) {
         return null;
