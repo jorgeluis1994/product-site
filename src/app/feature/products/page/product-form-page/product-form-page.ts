@@ -6,8 +6,8 @@ import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'app-product-form-page',
   standalone: true, 
-  imports: [ReactiveFormsModule], 
-  providers: [ProductFormFacade],  
+  imports: [ReactiveFormsModule,JsonPipe], 
+  providers: [],  
   templateUrl: './product-form-page.html',
   styleUrl: './product-form-page.scss',
 })

@@ -77,3 +77,15 @@
     </div>
   </form>
 </div>
+<div class="container-form">
+  <!-- ... todo tu código anterior ... -->
+
+  <!-- AÑADE ESTO AQUÍ PARA DEBUGEAR -->
+  <div style="margin-top: 20px; background: #f4f4f4; padding: 10px; border: 1px solid #ccc;">
+    <h3>Debug Formulario:</h3>
+    <pre>{{ facade.form.getRawValue() | json }}</pre>
+    <p><strong>Modo Edición:</strong> {{ facade.isEditMode() }}</p>
+    <p><strong>Estado:</strong> {{ facade.form.status }}</p>
+  </div>
+</div>
+

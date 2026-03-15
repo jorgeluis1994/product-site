@@ -2,11 +2,15 @@ import { inject, Injectable, signal } from '@angular/core';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProductsFacade } from './products.facade';
 import { ProductValidators } from '../utils/product-form.validators';
+import { Product } from '../models/product-form.model';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class ProductFormFacade {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly productsFacade = inject(ProductsFacade);
+
+  private readonly _isEditMode = signal(false);
+  readonly isEditMode = this._isEditMode.asReadonly();
 
   readonly form = this.fb.group({
     id: ['', {
@@ -36,16 +40,63 @@ export class ProductFormFacade {
     });
   }
 
+setEditMode(product: any) {
+  this._isEditMode.set(true);
+
+  // 1. Función para limpiar la fecha y dejarla solo como YYYY-MM-DD
+  // Si product.date_release es "2025-01-01T00:00:00", esto devuelve "2025-01-01"
+  const cleanDate = (dateStr: any) => {
+    if (!dateStr) return '';
+    return dateStr.split('T')[0]; 
+  };
+
+  // 2. Mapeo manual para asegurar que los nombres coincidan exactamente
+  this.form.patchValue({
+    id: product.id,
+    nombre: product.name,            // product.name -> nombre
+    descripcion: product.description, // product.description -> descripcion
+    logo: product.logo,
+    fecha_liberacion: cleanDate(product.date_release),
+    fecha_revision: cleanDate(product.date_revision)
+  });
+
+  // 3. Bloqueamos el ID para edición
+  this.form.controls.id.disable();
+}
+
+
+
   submit() {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.form.pending) {
       this.form.markAllAsTouched();
       return;
     }
-    // Para el backend, recuerda mapear estos nombres a los que pide el API (id, name, etc)
-    console.log(this.form.getRawValue());
+
+    // getRawValue() captura el ID aunque esté disabled
+    const values = this.form.getRawValue();
+    const payload: Product = {
+      id: values.id,
+      name: values.nombre,
+      description: values.descripcion,
+      logo: values.logo,
+      date_release: values.fecha_liberacion,
+      date_revision: values.fecha_revision
+    };
+
+    if (this._isEditMode()) {
+      this.productsFacade.updateProduct(payload.id!, payload);
+    } else {
+      this.productsFacade.addProduct(payload);
+    }
+
+    this.resetForm();
   }
 
+
+
   resetForm() {
+    this._isEditMode.set(false);
+    this.form.controls.id.enable();
     this.form.reset();
   }
 }

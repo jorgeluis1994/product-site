@@ -1,91 +1,132 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { finalize, firstValueFrom } from 'rxjs';
+import { finalize, firstValueFrom, Observable, of } from 'rxjs';
+import { AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Product } from '../../../core/models/product.model';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root' // Asegura que sea un Singleton
+})
 export class ProductsFacade {
+  
   private readonly productService = inject(ProductService);
+  private readonly notificationService = inject(NotificationService);
 
-  // ESTADO (Signals)
+  // --- ESTADO (Signals) ---
   private readonly _products = signal<Product[]>([]);
   private readonly _loading = signal<boolean>(false);
   private readonly _searchTerm = signal<string>('');
 
-  // SELECTORES (Para los componentes)
   readonly filteredProducts = computed(() => {
-    const term = this._searchTerm().toLowerCase();
-    return this._products().filter(
-      (p) => p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term),
+    const term = this._searchTerm().toLowerCase().trim();
+    const products = this._products();
+    
+    if (!term) return products;
+
+    return products.filter(p => 
+      p.name.toLowerCase().includes(term) || 
+      p.description.toLowerCase().includes(term)
     );
   });
 
   readonly isLoading = this._loading.asReadonly();
+  readonly totalProducts = computed(() => this.filteredProducts().length);
 
-  // ACCIONES
-  loadProducts() {
+  // --- ACCIONES ---
+
+  /**
+   * Carga inicial de productos desde la API
+   */
+  loadProducts(): void {
     this._loading.set(true);
 
-    this.productService
-      .getProducts()
+    this.productService.getProducts()
       .pipe(
-        finalize(() => {
-          this._loading.set(false);
-        }),
+        finalize(() => this._loading.set(false))
       )
       .subscribe({
         next: (response) => {
           this._products.set(response.data);
         },
-        error: (err) => {
-          console.error('--- [FACHADA] ERROR: No se pudo conectar al Back:', err);
-        },
+        error: () => {
+          this._products.set([]);
+        }
       });
   }
 
-  // Buscar (Actualiza el término para el computed)
-  setSearchTerm(term: string) {
+  /**
+   * Actualiza el término de búsqueda (F2)
+   */
+  setSearchTerm(term: string): void {
     this._searchTerm.set(term);
   }
 
-  // Crear Producto
-  addProduct(product: Product) {
-    this.productService.createProduct(product).subscribe(() => {
-      this._products.update((prev) => [...prev, product]);
+  /**
+   * Crear un nuevo producto (F4)
+   */
+  addProduct(product: Product): void {
+    this._loading.set(true);
+    this.productService.createProduct(product)
+      .pipe(finalize(() => this._loading.set(false)))
+      .subscribe({
+        next: () => {
+          // Actualización inmutable del estado
+          this._products.update(prev => [...prev, product]);
+          this.notificationService.show('Producto agregado exitosamente', 'success');
+        }
+      });
+  }
+
+  /**
+   * Actualizar un producto existente (F5)
+   */
+  updateProduct(id: string, product: Omit<Product, 'id'>): void {
+    this._loading.set(true);
+    this.productService.updateProduct(id, product)
+      .pipe(finalize(() => this._loading.set(false)))
+      .subscribe({
+        next: (response) => {
+          this._products.update(prev => 
+            prev.map(p => p.id === id ? { ...p, ...response.data } : p)
+          );
+          this.notificationService.show('Producto actualizado correctamente', 'success');
+        }
+      });
+  }
+
+  /**
+   * Eliminar un producto
+   */
+  deleteProduct(id: string): void {
+    this.productService.deleteProduct(id).subscribe({
+      next: () => {
+        this._products.update(prev => prev.filter(p => p.id !== id));
+        this.notificationService.show('Producto eliminado con éxito', 'success');
+      }
     });
   }
 
-  // Actualizar Producto
-  updateProduct(id: string, product: Omit<Product, 'id'>) {
-    this.productService.updateProduct(id, product).subscribe((updated) => {
-      this._products.update((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, ...updated.data } : p)),
-      );
-    });
-  }
 
-  // Eliminar Producto
-  deleteProduct(id: string) {
-    this.productService.deleteProduct(id).subscribe(() => {
-      this._products.update((prev) => prev.filter((p) => p.id !== id));
-    });
-  }
 
-  // Validar ID (Async Validator)
-  checkIdExists() {
+  /**
+   * Validador para verificar si el ID ya existe 
+   * Se usa Arrow Function para no perder el contexto de 'this'
+   */
+  checkIdExists = (): AsyncValidatorFn => {
     return async (control: AbstractControl): Promise<ValidationErrors | null> => {
-      if (!control.value) return null;
+      const value = control.value;
+
+      if (!value || value.length < 3) return null;
 
       try {
-
-        const exists = await firstValueFrom(this.productService.verifyId(control.value));
-        return exists ? { idExists: true } : null;
+       
+        const isRegistered = await firstValueFrom(this.productService.verifyId(value));
+        
+        return isRegistered ? { idExists: true } : null;
       } catch (error) {
-
         return null;
       }
     };
-  }
-
+  };
 }

@@ -1,7 +1,7 @@
 <div class="page">
   <div class="header">
     <div class="search-bar">
-    
+
       <input type="text" placeholder="Search.." (input)="facade.setSearchTerm($any($event.target).value)" />
     </div>
 
@@ -25,7 +25,8 @@
           <th>Fecha de liberación</th>
           <th>Fecha de reestructuración</th>
           <th></th>
-          <!-- Columna para acciones si necesitas -->
+
+
         </tr>
       </thead>
 
@@ -45,8 +46,10 @@
           <td>{{ product.description }}</td>
           <td>{{ product.date_release | date: 'dd/MM/yyyy' }}</td>
           <td>{{ product.date_revision | date: 'dd/MM/yyyy' }}</td>
-          <td>
-            <!-- Aquí podrías poner un botón de eliminar o editar -->
+          <td class="actions-cell">
+            <!-- Botón de los tres puntos -->
+            <!-- <button class="btn-dots">⋮</button> -->
+            <button class="btn-dots" (click)="editForm(product, $event)">⋮</button>
           </td>
         </tr>
         } @empty {
