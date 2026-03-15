@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ProductsFacade } from '../../facade/products.facade';
 import { CommonModule } from '@angular/common';
 import { DialogFormService } from '../../../../shared/services/dialog.service';
@@ -16,7 +16,7 @@ import { DialogConfirm } from "../../../../shared/dialog/dialog-confirm/dialog-c
     DialogForm,
     ProductFormPage,
     DialogConfirm
-],
+  ],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.scss',
 })
@@ -27,8 +27,8 @@ export class ProductListPage {
   public readonly confirmService = inject(DialogConfirmService);
 
   public activeMenuId: string | null = null;
-  // Añadimos esta variable para saber qué borrar
-  public productToDelete: Product | null = null; 
+
+  public productToDelete: Product | null = null;
 
   ngOnInit(): void {
     this.facade.loadProducts();
@@ -40,7 +40,7 @@ export class ProductListPage {
   }
 
   openForm() {
-    this.productFormFacade.resetForm(); // Limpiamos por si acaso
+    this.productFormFacade.resetForm(); 
     this.dialogForm.open();
   }
 
@@ -48,22 +48,22 @@ export class ProductListPage {
     event.stopPropagation();
     this.productFormFacade.setEditMode(product);
     this.dialogForm.open();
-    this.activeMenuId = null; // Cerramos el menú de 3 puntos
+    this.activeMenuId = null; 
   }
 
   toggleMenu(id: string, event: MouseEvent): void {
-    event.stopPropagation(); 
+    event.stopPropagation();
     this.activeMenuId = (this.activeMenuId === id) ? null : id;
   }
 
-  // REEMPLAZA TU MÉTODO ANTERIOR POR ESTE:
+
   openDeleteConfirm(product: Product) {
     this.productToDelete = product;
     this.confirmService.open();
-    this.activeMenuId = null; // Cerramos el menú de 3 puntos al abrir el modal
+    this.activeMenuId = null; 
   }
 
-  // ESTE MÉTODO ES EL QUE SE LLAMA AL DAR CLICK EN "CONFIRMAR"
+
   handleDelete() {
     if (this.productToDelete) {
       this.facade.deleteProduct(this.productToDelete.id);

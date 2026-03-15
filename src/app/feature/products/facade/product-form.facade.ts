@@ -3,12 +3,14 @@ import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProductsFacade } from './products.facade';
 import { ProductValidators } from '../utils/product-form.validators';
 import { Product } from '../models/product-form.model';
+import { DialogFormService } from '../../../shared/services/dialog.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProductFormFacade {
   
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly productsFacade = inject(ProductsFacade);
+  private readonly dialogService = inject(DialogFormService);
 
   private readonly _isEditMode = signal(false);
   readonly isEditMode = this._isEditMode.asReadonly();
@@ -21,7 +23,7 @@ export class ProductFormFacade {
       asyncValidators: [this.productsFacade.checkIdExists()],
       updateOn: 'blur'
     }],
-    nombre: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
+    nombre: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
     descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
     logo: ['', [Validators.required]],
     fecha_liberacion: ['', [Validators.required, ProductValidators.atLeastToday()]],
@@ -65,7 +67,7 @@ export class ProductFormFacade {
 
 
 
-  submit() {
+   submit() {
     if (this.form.invalid || this.form.pending) {
       this.form.markAllAsTouched();
       return;
@@ -87,8 +89,12 @@ export class ProductFormFacade {
       this.productsFacade.addProduct(payload);
     }
 
+ 
     this.resetForm();
+  
+    this.dialogService.close();
   }
+
 
 
   resetForm() {

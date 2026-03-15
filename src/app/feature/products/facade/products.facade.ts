@@ -6,7 +6,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Product } from '../../../core/models/product.model';
 
 @Injectable({
-  providedIn: 'root' 
+  providedIn: 'root'
 })
 export class ProductsFacade {
 
@@ -53,25 +53,28 @@ export class ProductsFacade {
     this._searchTerm.set(term);
   }
 
+  // addProduct corregido
   addProduct(product: Product): void {
     this._loading.set(true);
     this.productService.createProduct(product)
       .pipe(finalize(() => this._loading.set(false)))
       .subscribe({
         next: (response) => {
-  
-          const newProduct = response.data || product; 
-          
-          this._products.update(prev => [...prev, newProduct]);
-          
+          const productFromApi = response.data;
+
+          this._products.update(prev => [...prev, productFromApi]);
+          this.loadProducts(); 
+
           this.notificationService.show('Producto agregado exitosamente', 'success');
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || 'Error al agregar producto';
+          this.notificationService.show(errorMsg, 'error');
         }
       });
   }
 
-  /**
-   * Actualizar un producto existente
-   */
+  // updateProduct corregido
   updateProduct(id: string, product: Product): void {
     this._loading.set(true);
     this.productService.updateProduct(id, product)
@@ -79,8 +82,10 @@ export class ProductsFacade {
       .subscribe({
         next: (response) => {
           this._products.update(prev =>
+            // El map crea un nuevo array, notificando a la tabla del cambio
             prev.map(p => p.id === id ? { ...p, ...response.data } : p)
           );
+          this.loadProducts(); 
           this.notificationService.show('Producto actualizado correctamente', 'success');
         }
       });

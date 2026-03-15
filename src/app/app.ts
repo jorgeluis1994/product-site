@@ -5,7 +5,7 @@ import { DialogForm } from "./shared/dialog/dialog-form/dialog-form";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Notification, DialogForm],
+  imports: [RouterOutlet, Notification],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
