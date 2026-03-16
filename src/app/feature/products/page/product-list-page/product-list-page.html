@@ -79,16 +79,18 @@
     }
   </div>
 
-<div class="table-footer">
-    <!-- Contador dinámico -->
-  <span>{{ facade.filteredProducts().length }} Resultados</span>
+  <div class="table-footer">
+    <!-- Usamos el total real de coincidencias -->
+    <span>{{ facade.totalFilteredResults() }} Resultados</span>
 
-    <select>
-    <option value="5">5</option>
-    <option value="10">10</option>
-    <option value="20">20</option>
-  </select>
-</div>
+    <!-- Conectamos al nuevo método -->
+    <select (change)="facade.setPageSize($any($event.target).value)">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+    </select>
+  </div>
+
 
 </div>
 
@@ -98,9 +100,7 @@
 </app-dialog-form>
 
 @if (confirmService.isOpen()) {
-  <app-dialog-confirm 
-    [productName]="productToDelete?.name || ''"
-    (confirm)="handleDelete()"
-    (cancel)="confirmService.close()">
-  </app-dialog-confirm>
+<app-dialog-confirm [productName]="productToDelete?.name || ''" (confirm)="handleDelete()"
+  (cancel)="confirmService.close()">
+</app-dialog-confirm>
 }

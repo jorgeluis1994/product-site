@@ -19,17 +19,40 @@ export class ProductsFacade {
   readonly isLoading = this._loading.asReadonly();
   readonly totalProducts = computed(() => this.filteredProducts().length);
 
+  private readonly _pageSize = signal<number>(5);
+
   readonly filteredProducts = computed(() => {
     const term = this._searchTerm().toLowerCase().trim();
     const products = this._products();
+    const size = this._pageSize();
 
-    if (!term) return products;
+    const filtered = !term
+      ? products
+      : products.filter(p =>
+        p.name.toLowerCase().includes(term) ||
+        p.description.toLowerCase().includes(term)
+      );
 
-    return products.filter(p =>
+    // Retornamos solo la cantidad solicitada (0 a 5, 10 o 20)
+    return filtered.slice(0, size);
+  });
+
+  readonly totalFilteredResults = computed(() => {
+    const term = this._searchTerm().toLowerCase().trim();
+    if (!term) return this._products().length;
+    return this._products().filter(p =>
       p.name.toLowerCase().includes(term) ||
       p.description.toLowerCase().includes(term)
-    );
+    ).length;
   });
+
+  setPageSize(size: number): void {
+    this._pageSize.set(size);
+  }
+
+  setSearchTerm(term: string): void {
+    this._searchTerm.set(term);
+  }
 
 
   loadProducts(): void {
@@ -49,9 +72,7 @@ export class ProductsFacade {
       });
   }
 
-  setSearchTerm(term: string): void {
-    this._searchTerm.set(term);
-  }
+
   addProduct(product: Product, onSuccess?: () => void): void {
     this._loading.set(true);
     this.productService.createProduct(product)
