@@ -1,59 +1,33 @@
-# ProductosFrontend
+# Financial Products Manager - Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+Solución para la gestión de productos financieros basada en una arquitectura modular y reactiva, cumpliendo con los requerimientos técnicos y de diseño establecidos.
 
-## Development server
+## 📁 Estructura del Proyecto
 
-To start a local development server, run:
+El proyecto sigue una organización por dominios y capas de responsabilidad:
 
-```bash
-ng serve
-```
+- **`src/app/core`**: Servicios globales, modelos de datos y utilitarios transversales.
+- **`src/app/feature/products`**: Módulo principal de la aplicación.
+  - **`components`**: Componentes de UI (tabla, búsqueda, paginación).
+  - **`facade`**: Capa de abstracción para la gestión de estado y lógica de negocio.
+  - **`page`**: Componentes contenedores de página (listado y formulario).
+  - **`utils`**: Validadores personalizados para el formulario.
+- **`src/app/shared`**: Componentes reutilizables (diálogos, botones, notificaciones) y servicios de utilidad.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🚀 Arquitectura Técnica
 
-## Code scaffolding
+- **Angular 21**: Implementación de Standalone Components y gestión de estado mediante **Signals** (`signal`, `computed`, `effect`).
+- **Pattern Facade**: Uso de `ProductsFacade` para desacoplar la interfaz de los servicios de infraestructura, garantizando un flujo de datos predecible.
+- **Validaciones Avanzadas**: Implementación de validadores asíncronos para la verificación de IDs únicos y validaciones cruzadas para fechas.
+- **CSS Puro**: Maquetación responsive (Flexbox/Grid) basada estrictamente en los diseños D1-D4, sin librerías externas.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🛠️ Instalación y Ejecución
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. **Instalar dependencias**:
+   ```bash
+   npm install
+Configurar el Backend:
+Asegurar que el servidor local de la prueba esté activo en http://localhost:3002.
+Ejecutar la aplicación:
+bash
+npm run start
