@@ -52,41 +52,39 @@ export class ProductsFacade {
   setSearchTerm(term: string): void {
     this._searchTerm.set(term);
   }
-
-  // addProduct corregido
-  addProduct(product: Product): void {
+  addProduct(product: Product, onSuccess?: () => void): void {
     this._loading.set(true);
     this.productService.createProduct(product)
       .pipe(finalize(() => this._loading.set(false)))
       .subscribe({
         next: (response) => {
-          const productFromApi = response.data;
 
-          this._products.update(prev => [...prev, productFromApi]);
-          this.loadProducts(); 
-
+          this.loadProducts();
           this.notificationService.show('Producto agregado exitosamente', 'success');
+          onSuccess?.();
         },
         error: (err) => {
-          const errorMsg = err.error?.message || 'Error al agregar producto';
-          this.notificationService.show(errorMsg, 'error');
+          console.log('error:', err);
+          this.notificationService.show(err.error?.message || 'Error', 'error');
         }
       });
   }
 
-  // updateProduct corregido
-  updateProduct(id: string, product: Product): void {
+  updateProduct(id: string, product: Product, onSuccess?: () => void): void {
     this._loading.set(true);
     this.productService.updateProduct(id, product)
       .pipe(finalize(() => this._loading.set(false)))
       .subscribe({
         next: (response) => {
           this._products.update(prev =>
-            // El map crea un nuevo array, notificando a la tabla del cambio
             prev.map(p => p.id === id ? { ...p, ...response.data } : p)
           );
-          this.loadProducts(); 
           this.notificationService.show('Producto actualizado correctamente', 'success');
+          onSuccess?.(); // ← avisa cuando terminó
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || 'Error al actualizar producto';
+          this.notificationService.show(errorMsg, 'error');
         }
       });
   }

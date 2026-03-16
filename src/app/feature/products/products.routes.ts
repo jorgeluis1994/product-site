@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
-import { ProductsFacade } from './facade/products.facade'; // Importa tu fachada
+import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 
 export const PRODUCT_ROUTES: Routes = [
   {
     path: '',
-    // 🚀 Proveemos la fachada para todas las rutas hijas aquí
-    providers: [ProductsFacade],
+    providers: [],
     children: [
       {
         path: '',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () => import('./page/product-list-page/product-list-page')
           .then((m) => m.ProductListPage),
       },

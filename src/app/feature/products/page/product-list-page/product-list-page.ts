@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { ProductsFacade } from '../../facade/products.facade';
 import { CommonModule } from '@angular/common';
 import { DialogFormService } from '../../../../shared/services/dialog.service';
@@ -29,6 +29,12 @@ export class ProductListPage {
   public activeMenuId: string | null = null;
 
   public productToDelete: Product | null = null;
+
+  constructor() {
+    effect(() => {
+      console.log('🔄 Signal cambió, productos:', this.facade.filteredProducts().length);
+    });
+  }
 
   ngOnInit(): void {
     this.facade.loadProducts();

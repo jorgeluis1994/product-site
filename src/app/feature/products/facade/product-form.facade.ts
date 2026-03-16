@@ -7,7 +7,7 @@ import { DialogFormService } from '../../../shared/services/dialog.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProductFormFacade {
-  
+
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly productsFacade = inject(ProductsFacade);
   private readonly dialogService = inject(DialogFormService);
@@ -17,8 +17,8 @@ export class ProductFormFacade {
 
   readonly form = this.fb.group({
     id: ['', {
-      validators: [Validators.required, 
-      Validators.minLength(3), 
+      validators: [Validators.required,
+      Validators.minLength(3),
       Validators.maxLength(10)],
       asyncValidators: [this.productsFacade.checkIdExists()],
       updateOn: 'blur'
@@ -64,10 +64,8 @@ export class ProductFormFacade {
 
     this.form.controls.id.disable();
   }
+  submit() {
 
-
-
-   submit() {
     if (this.form.invalid || this.form.pending) {
       this.form.markAllAsTouched();
       return;
@@ -83,16 +81,18 @@ export class ProductFormFacade {
       date_revision: values.fecha_revision
     };
 
+
+    const onSuccess = () => {
+      this.resetForm();
+      this.dialogService.close();
+    };
+
     if (this._isEditMode()) {
-      this.productsFacade.updateProduct(payload.id!, payload);
+      this.productsFacade.updateProduct(payload.id!, payload, onSuccess);
     } else {
-      this.productsFacade.addProduct(payload);
+      this.productsFacade.addProduct(payload, onSuccess);
     }
 
- 
-    this.resetForm();
-  
-    this.dialogService.close();
   }
 
 
